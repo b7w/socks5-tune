@@ -4,15 +4,16 @@ type: docker
 name: Socks5 Tune CI
 
 steps:
-  - name: Tests
+  - name: Tests and build
     pull: always
-    image: python:3.9-slim
+    image: python:3.8-slim
     environment:
       XDG_CACHE_HOME: tmp/pip
     commands:
       - pip3 install poetry
       - poetry install
       - poetry run pytest
+      - poetry build
 
   - name: Build docker
     pull: always
@@ -30,4 +31,3 @@ steps:
     when:
       branch:
         - master
-

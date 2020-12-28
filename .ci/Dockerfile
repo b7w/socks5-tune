@@ -1,28 +1,19 @@
-FROM python:3.9-slim
+FROM python:3.8-slim
 
-ENV POETRY_HOME /opt/poetry
-ENV POETRY_VIRTUALENVS_CREATE false
-
-ENV ANSIBLE_HOST_KEY_CHECKING false
+ENV VERSION "0.1.0"
+ENV WHEEL "socks5_tune-$VERSION-py3-none-any.whl"
 
 
 RUN apt-get update -qq && \
-    apt-get install -yqq curl ssh && \
+    apt-get install -yqq curl openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get -qq clean
 
 
-# Install poetry
-RUN pip install --target=$POETRY_HOME --no-cache-dir poetry
+COPY dist/$WHEEL /app/
 
+RUN ls /app/$WHEEL
 
-# Intall plugin
-WORKDIR /plugin
-
-COPY src /plugin/src/
-COPY pyproject.toml poetry.lock /plugin/
-
-RUN PYTHONPATH=$POETRY_HOME $POETRY_HOME/bin/poetry install --no-dev --no-interaction && rm -rf $POETRY_HOME
-
+RUN pip install --no-cache-dir /app/$WHEEL
 
 ENTRYPOINT ["socks5-tune"]
