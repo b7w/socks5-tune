@@ -9,6 +9,8 @@ A simple supervisor for ssh sock5 tunnel, plus web server for Proxy Auto-Configu
 Configuration
 -------------
 
+Example of `docker-compose.yml`:
+
 ```yaml
 version: "3"
 services:
@@ -31,9 +33,36 @@ services:
                 max-size: "1m"
 ```
 
+Requests:
+
+```http request
+### Status
+GET http://127.0.0.1:8000/status
+
+
+### Create/Update profile
+POST http://127.0.0.1:8000/profile/test.pac
+
+function FindProxyForURL(url, host) {
+    if (shExpMatch(host, "ifconfig.me")) {
+        return "SOCKS 127.0.0.1:1080";
+    }
+    return "DIRECT";
+}
+
+
+### Profile url for Browser setup
+GET http://127.0.0.1:8000/profile/test.pac
+
+
+
+### Delete profile
+DELETE http://127.0.0.1:8000/profile/test.pac
+```
+
 About
 -----
 
-Socks5-tune is open source project, released by MIT license.
+socks5-tune is open source project, released by MIT license.
 
 Look, feel, be happy :-)
