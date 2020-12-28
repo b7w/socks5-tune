@@ -21,7 +21,7 @@ def copy_pkey(private_key):
 
 
 async def create_tunnel(tunnel: TunnelInfo, destination: str):
-    cmd = f'ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -D 1080 -C -N {destination}'
+    cmd = f'ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -D 0.0.0.0:1080 -C -N {destination}'
     r = None
     while r != 0:
         p = await _spawn_process(cmd)

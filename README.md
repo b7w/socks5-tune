@@ -21,7 +21,7 @@ services:
         environment:
             - APP_PRIVATE_KEY=/storage/private-key.pem
             - APP_DESTINATION=socks5-tune@vpc2.b7w.me
-            - APP_STORAGE=/storage
+            - APP_STORAGE_PATH=/storage
         volumes:
             - ./storage:/storage
         logging:
