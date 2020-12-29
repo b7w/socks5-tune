@@ -5,6 +5,14 @@ Socks5 Tune
 
 A simple supervisor for ssh sock5 tunnel, plus web server for Proxy Auto-Configuration (PAC) profiles.
 
+```mermaid
+graph TD
+  Docker --> Python
+  Python --> HTTP[HTTP Server]
+  Python -->|spawn| SSH[SSH Daemon]
+  SSH --> S[SOCKS5]
+  HTTP --> P[PAC files]
+```
 
 Configuration
 -------------
