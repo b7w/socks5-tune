@@ -5,7 +5,7 @@ from sanic.log import logger
 
 from socks5_tune import routes
 from socks5_tune.model import TunnelInfo
-from socks5_tune.tunnel import create_tunnel, stop_tunnel, copy_pkey
+from socks5_tune.tunnel import create_tunnel, stop_tunnel, healthcheck_tunnel, copy_pkey
 
 
 async def before_server_start(app: Sanic, loop):
@@ -18,17 +18,25 @@ async def before_server_start(app: Sanic, loop):
     if not storage_path.exists():
         logger.error(f'Storage path {storage_path.as_posix()} not found')
         app.stop()
-    destination = app.config['DESTINATION']
+    if ':' in app.config['DESTINATION']:
+        destination, port = app.config['DESTINATION'].split(':')
+    else:
+        destination = app.config['DESTINATION']
+        port = '22'
     app.tunnel = TunnelInfo()
 
-    copy_pkey(private_key)
-    task = create_tunnel(app.tunnel, destination)
-    app.add_task(task)
+    pkey = copy_pkey(private_key)
+    loop.create_task(create_tunnel(app.tunnel, pkey, destination, int(port)))
+    app.tunnel.healthcheck_task = loop.create_task(healthcheck_tunnel(loop, app.tunnel, int(port)))
 
 
 async def before_server_stop(app: Sanic, loop):
-    logger.info('Stopping ssh tunnel')
-    await stop_tunnel(app.tunnel.process)
+    if app.tunnel.healthcheck_task:
+        logger.info('Stopping healthcheck')
+        app.tunnel.healthcheck_task.cancel()
+    if app.tunnel.process:
+        logger.info('Stopping ssh tunnel')
+        await stop_tunnel(app.tunnel.process)
 
 
 def main():

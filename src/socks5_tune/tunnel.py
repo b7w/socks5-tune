@@ -2,9 +2,11 @@ import asyncio
 import shlex
 import shutil
 import signal
+from asyncio.events import AbstractEventLoop
 from asyncio.subprocess import Process
 from pathlib import Path
 
+from python_socks.async_.asyncio import Proxy
 from sanic.log import logger
 
 from socks5_tune.model import TunnelInfo
@@ -16,16 +18,18 @@ def copy_pkey(private_key):
         pkey.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         shutil.copy(private_key, pkey)
         pkey.chmod(0o600)
+        return pkey
     else:
         logger.warn('Find existing %s, skipping copying key...', pkey.as_posix())
+        return private_key
 
 
-async def create_tunnel(tunnel: TunnelInfo, destination: str):
+async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port: int = 22):
     cmd = f'ssh -o StrictHostKeyChecking=no' \
           f' -o ServerAliveInterval=60' \
           f' -o ServerAliveCountMax=10' \
-          f' -i ~/.ssh/id_rsa' \
-          f' -D 0.0.0.0:1080 -C -N {destination}'
+          f' -i {private_key}' \
+          f' -D 0.0.0.0:1080 -C -N {destination} -p {port}'
     r = None
     while r != 0:
         p = await _spawn_process(cmd)
@@ -40,6 +44,24 @@ async def create_tunnel(tunnel: TunnelInfo, destination: str):
             await asyncio.sleep(4)
         else:
             logger.info(msg)
+
+
+async def healthcheck_tunnel(loop: AbstractEventLoop, tunnel: TunnelInfo, port: int = 22):
+    await asyncio.sleep(4)
+    logger.info('Healthcheck started')
+    while tunnel.healthcheck:
+        if tunnel.process and tunnel.process.returncode is None:
+            try:
+                proxy = Proxy.from_url('socks5://127.0.0.1:1080')
+                sock = await proxy.connect(dest_host='127.0.0.1', dest_port=port)
+                reader, writer = await asyncio.open_connection(host=None, port=None, sock=sock)
+                writer.write(b'Ping\r\n')
+                await reader.read(-1)
+                logger.debug('Healthcheck: ok')
+            except Exception as e:
+                logger.warn('Healthcheck: error (%s)', e)
+                tunnel.process.send_signal(signal.SIGKILL)
+        await asyncio.sleep(10)
 
 
 async def stop_tunnel(p: Process):
