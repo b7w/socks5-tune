@@ -1,12 +1,11 @@
 from pathlib import Path
 
-import orjson
 from sanic import response
 from sanic.request import Request
 
 
 async def status(request: Request):
-    return response.json(request.app.tunnel.status, dumps=orjson.dumps)
+    return response.json(request.app.tunnel.status)
 
 
 async def pac_profile_get(request: Request, name):

@@ -7,7 +7,7 @@ authors = ["B7W <b7w@isudo.ru>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 sanic = "^20.9.1"
-orjson = "^3.4.6"
+python-socks = {version = "^1.2", extras = ["asyncio"]}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6"
