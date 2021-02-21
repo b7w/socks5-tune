@@ -2,7 +2,6 @@ import asyncio
 import shlex
 import shutil
 import signal
-from asyncio.events import AbstractEventLoop
 from asyncio.subprocess import Process
 from pathlib import Path
 
@@ -46,7 +45,7 @@ async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port:
             logger.info(msg)
 
 
-async def healthcheck_tunnel(loop: AbstractEventLoop, tunnel: TunnelInfo, port: int = 22):
+async def healthcheck_tunnel(tunnel: TunnelInfo, period: int, port: int):
     await asyncio.sleep(4)
     logger.info('Healthcheck started')
     while tunnel.healthcheck:
@@ -61,7 +60,7 @@ async def healthcheck_tunnel(loop: AbstractEventLoop, tunnel: TunnelInfo, port: 
             except Exception as e:
                 logger.warn('Healthcheck: error (%s)', e)
                 tunnel.process.send_signal(signal.SIGKILL)
-        await asyncio.sleep(10)
+        await asyncio.sleep(period)
 
 
 async def stop_tunnel(p: Process):
