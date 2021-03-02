@@ -51,7 +51,8 @@ def main():
     app.add_route(routes.pac_profile_post, '/profile/<name:[a-z0-9-]{2,32}>.pac', methods=['POST'])
     app.add_route(routes.pac_profile_delete, '/profile/<name:[a-z0-9-]{2,32}>.pac', methods=['DELETE'])
 
-    app.run(host='0.0.0.0', port=8000)
+    debug = app.config.get('DEBUG', False)
+    app.run(host='0.0.0.0', port=8000, debug=debug)
 
 
 if __name__ == '__main__':

@@ -10,6 +10,6 @@ class TunnelStatus:
 
 @dataclass
 class TunnelInfo:
-    healthcheck = None
+    healthcheck = True
     status: TunnelStatus = TunnelStatus()
     process: Process = None
