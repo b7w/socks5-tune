@@ -47,15 +47,18 @@ async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port:
 
 async def healthcheck_tunnel(tunnel: TunnelInfo, period: int, port: int):
     await asyncio.sleep(4)
-    logger.info('Healthcheck started')
+    logger.info('Starting healthcheck')
     while tunnel.healthcheck:
         if tunnel.process and tunnel.process.returncode is None:
             try:
-                proxy = Proxy.from_url('socks5://127.0.0.1:1080')
-                sock = await proxy.connect(dest_host='127.0.0.1', dest_port=port)
-                reader, writer = await asyncio.open_connection(host=None, port=None, sock=sock)
-                writer.write(b'Ping\r\n')
-                await reader.read(-1)
+                async def _work():
+                    proxy = Proxy.from_url('socks5://127.0.0.1:1080')
+                    sock = await proxy.connect(dest_host='127.0.0.1', dest_port=port)
+                    reader, writer = await asyncio.open_connection(host=None, port=None, sock=sock)
+                    writer.write(b'Ping\r\n')
+                    await reader.read(-1)
+
+                await asyncio.wait_for(_work(), timeout=5)
                 logger.debug('Healthcheck: ok')
             except Exception as e:
                 logger.warn('Healthcheck: error (%s)', e)
