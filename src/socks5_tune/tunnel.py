@@ -39,10 +39,10 @@ async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port:
         msg = await _proc_status(p)
         tunnel.status.last_msg = msg
         if r != 0:
-            logger.error(msg)
+            logger.warn('Tunnel daemon stopped: code: %s, msg: %s', r, msg)
             await asyncio.sleep(4)
         else:
-            logger.info(msg)
+            logger.info('Tunnel daemon stopped: %s', msg)
 
 
 async def healthcheck_tunnel(tunnel: TunnelInfo, period: int, port: int):
