@@ -25,8 +25,6 @@ def copy_pkey(private_key):
 
 async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port: int = 22):
     cmd = f'ssh -o StrictHostKeyChecking=no' \
-          f' -o ServerAliveInterval=60' \
-          f' -o ServerAliveCountMax=10' \
           f' -i {private_key}' \
           f' -D 0.0.0.0:1080 -C -N {destination} -p {port}'
     r = None
@@ -81,6 +79,6 @@ async def _spawn_process(cmd):
 
 
 async def _proc_status(p: Process):
-    info = str(await p.stdout.read(), encoding='utf-8')
-    error = str(await p.stderr.read(), encoding='utf-8')
+    info = str(await p.stdout.read(), encoding='utf-8')[-256:]
+    error = str(await p.stderr.read(), encoding='utf-8')[-256:]
     return f'ssh exit code: {p.returncode}, stdout: {info}, stderr: {error}'
