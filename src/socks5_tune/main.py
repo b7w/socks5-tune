@@ -47,9 +47,9 @@ def main():
     app.register_listener(before_server_stop, 'before_server_stop')
 
     app.add_route(routes.status, '/status', methods=['GET'])
-    app.add_route(routes.pac_profile_get, '/profile/<name:[a-z0-9-]{2,32}>.pac', methods=['GET'])
-    app.add_route(routes.pac_profile_post, '/profile/<name:[a-z0-9-]{2,32}>.pac', methods=['POST'])
-    app.add_route(routes.pac_profile_delete, '/profile/<name:[a-z0-9-]{2,32}>.pac', methods=['DELETE'])
+    app.add_route(routes.pac_profile_get, r'/profile/<name:[a-z0-9-]{2,32}.pac>', methods=['GET'])
+    app.add_route(routes.pac_profile_post, r'/profile/<name:[a-z0-9-]{2,32}.pac>', methods=['POST'])
+    app.add_route(routes.pac_profile_delete, r'/profile/<name:[a-z0-9-]{2,32}.pac>', methods=['DELETE'])
 
     debug = app.config.get('DEBUG', False)
     app.run(host='0.0.0.0', port=8000, debug=debug)

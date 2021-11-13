@@ -5,14 +5,12 @@ ENV WHEEL "socks5_tune-$VERSION-py3-none-any.whl"
 
 
 RUN apt-get update -qq && \
-    apt-get install -yqq curl openssh-client && \
+    apt-get install -yqq --no-install-recommends curl openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get -qq clean
 
 
 COPY dist/$WHEEL /app/
-
-RUN ls /app/$WHEEL
 
 RUN pip install --no-cache-dir /app/$WHEEL
 
