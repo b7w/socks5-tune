@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.11-slim-bookworm
 
 ENV VERSION "0.1.0"
 ENV WHEEL "socks5_tune-$VERSION-py3-none-any.whl"
@@ -10,8 +10,8 @@ RUN apt-get update -qq && \
     apt-get -qq clean
 
 
-COPY dist/$WHEEL /app/
+COPY dist/$WHEEL dist/requirements.txt /app/
 
-RUN pip install --no-cache-dir /app/$WHEEL
+RUN pip install --no-cache-dir -r /app/requirements.txt && pip install --no-cache-dir /app/$WHEEL
 
 ENTRYPOINT ["socks5-tune"]

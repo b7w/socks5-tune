@@ -6,7 +6,7 @@ from sanic.request import Request
 
 
 async def status(request: Request):
-    return response.json(asdict(request.app.tunnel.status))
+    return response.json(asdict(request.app.ctx.tunnel.status))
 
 
 async def pac_profile_get(request: Request, name):

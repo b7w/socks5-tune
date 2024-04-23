@@ -6,5 +6,4 @@
 /docker-compose.yml
 
 tmp/
-target/
-*\.egg-info/
+dist/

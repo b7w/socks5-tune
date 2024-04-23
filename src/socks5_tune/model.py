@@ -1,5 +1,5 @@
 from asyncio.subprocess import Process
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -11,5 +11,5 @@ class TunnelStatus:
 @dataclass
 class TunnelInfo:
     healthcheck = True
-    status: TunnelStatus = TunnelStatus()
+    status: TunnelStatus = field(default_factory=TunnelStatus)
     process: Process = None
