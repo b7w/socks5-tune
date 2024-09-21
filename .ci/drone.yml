@@ -6,7 +6,7 @@ name: Socks5 Tune CI
 steps:
   - name: Tests and build
     pull: always
-    image: python:3.11-slim-bookworm
+    image: python:3.12-slim-bookworm
     environment:
       XDG_CACHE_HOME: tmp/pip
     commands:

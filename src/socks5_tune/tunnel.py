@@ -37,10 +37,10 @@ async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port:
         msg = await _proc_status(p)
         tunnel.status.last_msg = msg
         if r != 0:
-            logger.warn('Tunnel daemon stopped: code: %s, msg: %s', r, msg)
+            logger.warn('Tunnel daemon exit: "%s"', msg)
             await asyncio.sleep(4)
         else:
-            logger.info('Tunnel daemon stopped: %s', msg)
+            logger.info('Tunnel daemon stopped')
 
 
 async def healthcheck_tunnel(tunnel: TunnelInfo, period: int, port: int):
@@ -81,4 +81,4 @@ async def _spawn_process(cmd):
 async def _proc_status(p: Process):
     info = str(await p.stdout.read(), encoding='utf-8')[-256:]
     error = str(await p.stderr.read(), encoding='utf-8')[-256:]
-    return f'ssh exit code: {p.returncode}, stdout: {info}, stderr: {error}'
+    return f'code: {p.returncode}, stdout: {info}, stderr: {error}'
