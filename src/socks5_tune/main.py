@@ -11,7 +11,7 @@ from socks5_tune.tunnel import create_tunnel, stop_tunnel, healthcheck_tunnel, c
 
 async def before_server_start(app: Sanic, loop):
     logger.info('Starting ssh tunnel')
-    healthcheck_period = int(app.config.get('HEALTHCHECK_PERIOD', '120'))
+    healthcheck_period = int(app.config.get('HEALTHCHECK_PERIOD', '60'))
     private_key = Path(app.config.get('PRIVATE_KEY', 'None'))
     if not private_key.exists():
         logger.error(f'Private key {private_key.as_posix()} not found')
@@ -25,10 +25,11 @@ async def before_server_start(app: Sanic, loop):
     else:
         destination = app.config['DESTINATION']
         port = '22'
+    ports_to_forward = [int(i) for i in str(app.config.get('PORTS_TO_FORWARD', '')).split(',') if i]
     app.ctx.tunnel = TunnelInfo()
 
     pkey = copy_pkey(private_key)
-    loop.create_task(create_tunnel(app.ctx.tunnel, pkey, destination, int(port)))
+    loop.create_task(create_tunnel(app.ctx.tunnel, pkey, ports_to_forward, destination, int(port)))
     app.ctx.tunnel.healthcheck_task = loop.create_task(healthcheck_tunnel(app.ctx.tunnel, healthcheck_period, int(port)))
 
 

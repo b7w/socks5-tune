@@ -23,14 +23,20 @@ def copy_pkey(private_key):
         return private_key
 
 
-async def create_tunnel(tunnel: TunnelInfo, private_key, destination: str, port: int = 22):
+async def create_tunnel(tunnel: TunnelInfo, private_key, ports_to_forward, destination: str, port: int = 22):
+    forward = ' '.join([f'-L 0.0.0.0:{i}:127.0.0.1:{i}' for i in ports_to_forward])
     cmd = f'ssh -o StrictHostKeyChecking=no' \
           f' -i {private_key}' \
+          f' {forward}' \
           f' -D 0.0.0.0:1080 -C -N {destination} -p {port}'
     r = None
     while r != 0:
         p = await _spawn_process(cmd)
-        logger.info('Tunnel started with pid: %s', p.pid)
+        if ports_to_forward:
+            logger.info('Tunnel started to %s with ports to forward %s on pid %s',
+                        destination, ','.join(str(i) for i in ports_to_forward), p.pid)
+        else:
+            logger.info('Tunnel started to %s on pid %s', destination, p.pid)
         tunnel.process = p
         tunnel.status.restarts += 1
         r = await p.wait()
