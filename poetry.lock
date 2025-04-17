@@ -13,18 +13,6 @@ files = [
 ]
 
 [[package]]
-name = "async-timeout"
-version = "4.0.3"
-description = "Timeout context manager for asyncio programs"
-optional = false
-python-versions = ">=3.7"
-groups = ["main"]
-files = [
-    {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
-    {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
-]
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -263,35 +251,32 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments
 
 [[package]]
 name = "python-socks"
-version = "2.5.1"
-description = "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python"
+version = "2.7.1"
+description = "Proxy (SOCKS4, SOCKS5, HTTP CONNECT) client for Python"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "python_socks-2.5.1-py3-none-any.whl", hash = "sha256:00e9a0c3a208e14429d42c820ddbe0755e17596f639fd558f3e8d925fb34bcec"},
-    {file = "python_socks-2.5.1.tar.gz", hash = "sha256:7ed6559864d28858fbb7a85c6d96bb280e95af814d1d5d6dc50f92e35bfa340e"},
+    {file = "python_socks-2.7.1-py3-none-any.whl", hash = "sha256:2603c6454eeaeb82b464ad705be188989e8cf1a4a16f0af3c921d6dd71a49cec"},
+    {file = "python_socks-2.7.1.tar.gz", hash = "sha256:f1a0bb603830fe81e332442eada96757b8f8dec02bd22d1d6f5c99a79704c550"},
 ]
-
-[package.dependencies]
-async-timeout = {version = ">=3.0.1", optional = true, markers = "extra == \"asyncio\""}
 
 [package.extras]
 anyio = ["anyio (>=3.3.4,<5.0.0)"]
-asyncio = ["async-timeout (>=3.0.1)"]
+asyncio = ["async-timeout (>=4.0) ; python_version < \"3.11\""]
 curio = ["curio (>=1.4)"]
-trio = ["trio (>=0.16.0)"]
+trio = ["trio (>=0.24)"]
 
 [[package]]
 name = "sanic"
-version = "24.6.0"
+version = "24.12.0"
 description = "A web server and web framework that's written to go fast. Build fast. Run fast."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "sanic-24.6.0-py3-none-any.whl", hash = "sha256:e2c6b392e213d85d9843cf27c64e3f2dacb3ec5c31c8c7ade4c404cd3030e994"},
-    {file = "sanic-24.6.0.tar.gz", hash = "sha256:2e0841e2c8c28e68a0e6fc570c42aafbbe3b385d7141b9f96997d9d6c17d7afb"},
+    {file = "sanic-24.12.0-py3-none-any.whl", hash = "sha256:3c2a01ec0b6c5926e3efe34eac1b497d31ed989038fe213eb25ad0c98687d388"},
+    {file = "sanic-24.12.0.tar.gz", hash = "sha256:09c23aa917616c1e60e44c66dfd7582cb9fd6503f78298c309945909f5839836"},
 ]
 
 [package.dependencies]
@@ -308,9 +293,9 @@ uvloop = {version = ">=0.15.0", markers = "sys_platform != \"win32\" and impleme
 websockets = ">=10.0"
 
 [package.extras]
-all = ["autodocsumm (>=0.2.11)", "bandit", "beautifulsoup4", "chardet (==3.*)", "coverage", "cryptography", "docutils", "enum-tools[sphinx]", "m2r2", "mistune (<2.0.0)", "mypy", "pygments", "pytest (>=8.2.2)", "pytest-benchmark", "pytest-sanic", "ruff", "sanic-testing (>=23.6.0)", "slotscheck (>=0.8.0,<1)", "sphinx (>=2.1.2)", "sphinx-rtd-theme (>=0.4.3)", "towncrier", "tox", "types-ujson ; sys_platform != \"win32\" and implementation_name == \"cpython\"", "uvicorn"]
+all = ["autodocsumm (>=0.2.11)", "bandit", "beautifulsoup4", "chardet (==3.*)", "coverage", "cryptography", "docutils", "enum-tools[sphinx]", "m2r2", "mistune (<2.0.0)", "mypy", "pygments", "pytest (>=8.2.2)", "pytest-benchmark", "pytest-sanic", "ruff", "sanic-testing (>=23.6.0)", "slotscheck (>=0.8.0,<1)", "sphinx (>=2.1.2)", "sphinx_rtd_theme (>=0.4.3)", "towncrier", "tox", "types-ujson ; sys_platform != \"win32\" and implementation_name == \"cpython\"", "uvicorn"]
 dev = ["bandit", "beautifulsoup4", "chardet (==3.*)", "coverage", "cryptography", "docutils", "mypy", "pygments", "pytest (>=8.2.2)", "pytest-benchmark", "pytest-sanic", "ruff", "sanic-testing (>=23.6.0)", "slotscheck (>=0.8.0,<1)", "towncrier", "tox", "types-ujson ; sys_platform != \"win32\" and implementation_name == \"cpython\"", "uvicorn"]
-docs = ["autodocsumm (>=0.2.11)", "docutils", "enum-tools[sphinx]", "m2r2", "mistune (<2.0.0)", "pygments", "sphinx (>=2.1.2)", "sphinx-rtd-theme (>=0.4.3)"]
+docs = ["autodocsumm (>=0.2.11)", "docutils", "enum-tools[sphinx]", "m2r2", "mistune (<2.0.0)", "pygments", "sphinx (>=2.1.2)", "sphinx_rtd_theme (>=0.4.3)"]
 ext = ["sanic-ext"]
 http3 = ["aioquic"]
 test = ["bandit", "beautifulsoup4", "chardet (==3.*)", "coverage", "docutils", "mypy", "pygments", "pytest (>=8.2.2)", "pytest-benchmark", "pytest-sanic", "ruff", "sanic-testing (>=23.6.0)", "slotscheck (>=0.8.0,<1)", "types-ujson ; sys_platform != \"win32\" and implementation_name == \"cpython\"", "uvicorn"]
@@ -609,4 +594,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "9889ab55376c968157b0e64719175d24e3d22869c4f735bcee95422d76dbaa85"
+content-hash = "334af6507a3d3ee927a0a8dd0c4232269b240fe68139fd37b356f2e9e77ef121"
