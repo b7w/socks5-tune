@@ -1,7 +1,7 @@
 Socks5 Tune
 ===========
 
-[![Build Status](https://drone.b7w.me/api/badges/b7w/socks5-tune/status.svg)](https://drone.b7w.me/b7w/socks5-tune)
+[![status-badge](https://woodpecker.b7w.me/api/badges/5/status.svg)](https://woodpecker.b7w.me/repos/5)
 
 A simple supervisor for ssh sock5 tunnel, plus web server for Proxy Auto-Configuration (PAC) profiles.
 
