@@ -21,8 +21,13 @@ async def pac_profile_get(request: Request, name):
 
 async def pac_profile_post(request: Request, name):
     storage_path = Path(request.app.config['STORAGE_PATH'])
-    with Path(storage_path, name).open(mode='w') as f:
-        f.write(str(request.body, 'utf-8'))
+    if request.files:
+        _, f = request.files.popitem()
+        body = f[0].body
+    else:
+        body = request.body
+    with Path(storage_path, name).open(mode='wb') as f:
+        f.write(body)
         return response.json(_list_profiles(storage_path))
 
 
