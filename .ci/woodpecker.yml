@@ -4,11 +4,17 @@ steps:
     environment:
       XDG_CACHE_HOME: tmp/pip
     commands:
-      - pip3 install 'poetry<2.0.0'
+      - pip3 install 'poetry<2.0.0' licensecheck
       - poetry install
       - poetry run pytest
       - poetry build
       - poetry export -f requirements.txt --output dist/requirements.txt
+      - >
+        licensecheck --format ansi
+        --only-licenses apache bsd mit mpl python
+        --fail-licenses gpl
+        --show-only-failing
+        --zero
 
   - name: 'Build docker'
     image: woodpeckerci/plugin-docker-buildx:5.2
