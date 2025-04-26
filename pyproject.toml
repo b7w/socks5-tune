@@ -2,6 +2,7 @@
 name = "socks5-tune"
 version = "0.1.0"
 description = ""
+license = "MIT"
 authors = ["B7W <b7w@isudo.ru>"]
 
 [tool.poetry.dependencies]
