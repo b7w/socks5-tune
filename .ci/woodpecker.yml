@@ -5,6 +5,7 @@ steps:
       XDG_CACHE_HOME: tmp/pip
     commands:
       - pip3 install poetry licensecheck
+      - poetry self add poetry-plugin-export
       - poetry install
       - poetry run pytest
       - poetry build
@@ -17,7 +18,7 @@ steps:
         --zero
 
   - name: 'Build docker'
-    image: woodpeckerci/plugin-docker-buildx:5.2
+    image: woodpeckerci/plugin-docker-buildx:6.0
     settings:
       registry: registry.b7w.me
       repo: registry.b7w.me/b7w/socks5-tune
