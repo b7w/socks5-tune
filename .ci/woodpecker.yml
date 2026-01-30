@@ -1,10 +1,10 @@
 steps:
   - name: 'Tests and build'
-    image: python:3.12-slim-bookworm
+    image: python:3.13-slim-bookworm
     environment:
       XDG_CACHE_HOME: tmp/pip
     commands:
-      - pip3 install 'poetry<2.0.0' licensecheck
+      - pip3 install poetry licensecheck
       - poetry install
       - poetry run pytest
       - poetry build

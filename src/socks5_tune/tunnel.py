@@ -72,9 +72,12 @@ async def healthcheck_tunnel(tunnel: TunnelInfo, period: int, port: int):
 
 async def stop_tunnel(p: Process):
     if p:
-        p.send_signal(signal.SIGTERM)
-        await p.wait()
-        logger.info('Tunnel stopped')
+        try:
+            p.send_signal(signal.SIGTERM)
+            await p.wait()
+            logger.info('Tunnel stopped')
+        except ProcessLookupError:
+            logger.warn(f"Tunnel stopped error: No process")
 
 
 async def _spawn_process(cmd):

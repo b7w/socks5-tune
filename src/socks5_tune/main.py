@@ -9,7 +9,7 @@ from socks5_tune.model import TunnelInfo
 from socks5_tune.tunnel import create_tunnel, stop_tunnel, healthcheck_tunnel, copy_pkey
 
 
-async def before_server_start(app: Sanic, loop):
+async def before_server_start(app: Sanic):
     logger.info('Starting ssh tunnel')
     healthcheck_period = int(app.config.get('HEALTHCHECK_PERIOD', '60'))
     private_key = Path(app.config.get('PRIVATE_KEY', 'None'))
@@ -26,20 +26,22 @@ async def before_server_start(app: Sanic, loop):
         destination = app.config['DESTINATION']
         port = '22'
     ports_to_forward = [int(i) for i in str(app.config.get('PORTS_TO_FORWARD', '')).split(',') if i]
-    app.ctx.tunnel = TunnelInfo()
+    tunnel = app.ctx.tunnel = TunnelInfo()
 
     pkey = copy_pkey(private_key)
-    loop.create_task(create_tunnel(app.ctx.tunnel, pkey, ports_to_forward, destination, int(port)))
-    app.ctx.tunnel.healthcheck_task = loop.create_task(healthcheck_tunnel(app.ctx.tunnel, healthcheck_period, int(port)))
+    tunnel.tunel_task = app.loop.create_task(create_tunnel(tunnel, pkey, ports_to_forward, destination, int(port)))
+    tunnel.healthcheck_task = app.loop.create_task(healthcheck_tunnel(tunnel, healthcheck_period, int(port)))
 
 
-async def before_server_stop(app: Sanic, loop):
-    if app.ctx.tunnel.healthcheck_task:
+async def before_server_stop(app: Sanic):
+    tunnel = app.ctx.tunnel
+    if tunnel.healthcheck_task:
         logger.info('Stopping healthcheck')
-        app.ctx.tunnel.healthcheck_task.cancel()
-    if app.ctx.tunnel.process:
+        tunnel.healthcheck_task.cancel()
+    if tunnel.process:
         logger.info('Stopping ssh tunnel')
-        await stop_tunnel(app.ctx.tunnel.process)
+        await stop_tunnel(tunnel.process)
+        tunnel.tunel_task.cancel()
 
 
 def create_app() -> Sanic:

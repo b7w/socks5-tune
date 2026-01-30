@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 ENV VERSION "0.1.0"
 ENV WHEEL "socks5_tune-$VERSION-py3-none-any.whl"

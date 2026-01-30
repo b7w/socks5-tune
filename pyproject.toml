@@ -6,8 +6,8 @@ license = "MIT"
 authors = ["B7W <b7w@isudo.ru>"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
-sanic = "^24.6"
+python = "^3.13"
+sanic = "^25.12"
 python-socks = {version = "^2.7", extras = ["asyncio"]}
 
 [tool.poetry.group.dev.dependencies]
