@@ -32,7 +32,6 @@ steps:
     when:
       branch:
         - master
-        - feature/database
 
 
   - name: 'Build Migrations docker'
@@ -50,4 +49,3 @@ steps:
     when:
       branch:
         - master
-        - feature/database
