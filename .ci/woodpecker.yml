@@ -17,7 +17,7 @@ steps:
         --show-only-failing
         --zero
 
-  - name: 'Build docker'
+  - name: 'Build App docker'
     image: woodpeckerci/plugin-docker-buildx:6.0
     settings:
       registry: registry.b7w.me
@@ -26,9 +26,28 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      dockerfile: .ci/Dockerfile
+      dockerfile: .ci/app.dockerfile
       tags: master
       bip: 173.17.1.3/24  # For docker in docker
     when:
       branch:
         - master
+        - feature/database
+
+
+  - name: 'Build Migrations docker'
+    image: woodpeckerci/plugin-docker-buildx:6.0
+    settings:
+      registry: registry.b7w.me
+      repo: registry.b7w.me/b7w/socks5-tune-migrattions
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: .ci/migrations.dockerfile
+      tags: master
+      bip: 173.17.1.3/24  # For docker in docker
+    when:
+      branch:
+        - master
+        - feature/database

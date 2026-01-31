@@ -3,9 +3,11 @@ from pathlib import Path
 from sanic import Sanic
 from sanic.log import logger
 from sanic.worker.loader import AppLoader
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from socks5_tune import routes
 from socks5_tune.model import TunnelInfo
+from socks5_tune.services import ProfileService
 from socks5_tune.tunnel import create_tunnel, stop_tunnel, healthcheck_tunnel, copy_pkey
 
 
@@ -47,13 +49,22 @@ async def before_server_stop(app: Sanic):
 def create_app() -> Sanic:
     app = Sanic('app', env_prefix='APP_')
 
+    url = app.config['DB_URL']
+    engine = create_async_engine(url)
+    create_session = async_sessionmaker(engine, expire_on_commit=False)
+
+    app.ctx.profile_service = ProfileService(session_maker=create_session)
+
     app.register_listener(before_server_start, 'before_server_start')
     app.register_listener(before_server_stop, 'before_server_stop')
 
     app.add_route(routes.status, '/status', methods=['GET'])
+    app.add_route(routes.api_proxys_list, r'/api/proxy', methods=['GET'])
+    app.add_route(routes.api_profile_list, r'/api/profile', methods=['GET'])
+    app.add_route(routes.api_profile_get, r'/api/profile/<id:int>', methods=['GET'])
+    app.add_route(routes.api_profile_delete, r'/api/profile/<id:int>', methods=['DELETE'])
     app.add_route(routes.pac_profile_get, r'/profile/<name:[a-z0-9-]{2,32}.pac>', methods=['GET'])
     app.add_route(routes.pac_profile_post, r'/profile/<name:[a-z0-9-]{2,32}.pac>', methods=['POST'])
-    app.add_route(routes.pac_profile_delete, r'/profile/<name:[a-z0-9-]{2,32}.pac>', methods=['DELETE'])
     return app
 
 
