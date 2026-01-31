@@ -10,7 +10,7 @@ python = "^3.13"
 sanic = "^25.12"
 python-socks = {version = "^2.7", extras = ["asyncio"]}
 sqlalchemy = "^2.0"
-psycopg = "^3.3"
+psycopg = {version = "^3.3", extras = ["binary"]}
 msgspec = "^0.20"
 
 [tool.poetry.group.dev.dependencies]
