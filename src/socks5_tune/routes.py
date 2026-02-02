@@ -3,7 +3,9 @@ from dataclasses import asdict
 from sanic import response
 from sanic.request import Request
 
+from socks5_tune.model import PatchRawProfile
 from socks5_tune.services import ProfileService
+from socks5_tune.utils import JsonMapper
 
 
 async def status(request: Request):
@@ -26,6 +28,16 @@ async def api_profile_get(request: Request, id: int):
     profile_service: ProfileService = request.app.ctx.profile_service
     profile = await profile_service.get_profile(id)
     return response.json(profile.as_dict())
+
+
+async def api_profile_patch(request: Request, id: int):
+    profile_service: ProfileService = request.app.ctx.profile_service
+    mapper: JsonMapper = request.app.ctx.json_mapper
+    patch: PatchRawProfile = mapper.deserialize(request.body, PatchRawProfile)
+    profile = await profile_service.patch_profile(id, patch.body)
+    if profile:
+        return response.json(profile.as_dict())
+    return response.json(dict(msg='Not found'), 404)
 
 
 async def api_profile_delete(request: Request, id: int):

@@ -81,6 +81,10 @@ class Domain(Base):
         return f"Domain(id={self.id!r}, name={self.name!r})"
 
 
+class PatchRawProfile(Struct):
+    body: str
+
+
 class DomainCreation(Struct):
     profile_id: int
     proxy_id: int

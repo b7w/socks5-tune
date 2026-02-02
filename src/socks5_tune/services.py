@@ -1,7 +1,7 @@
 from itertools import chain
 from typing import Sequence, Optional
 
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -85,6 +85,18 @@ class ProfileService:
                 raise Exception('Wrong profile type')
             profile.body = body
             s.add(profile)
+            return profile
+
+    async def patch_profile(self, pk: int, body: str) -> Optional[Profile]:
+        async with self.session_maker() as s, s.begin():
+            s: AsyncSession
+            r = await s.execute(select(Profile).where(Profile.id == pk))
+            profile = r.scalars().one_or_none()
+            if not profile:
+                return
+            if profile.type != ProfileType.RAW:
+                raise Exception('Wrong profile type')
+            profile.body = body
             return profile
 
     async def delete_profile(self, pk: int) -> Optional[Profile]:
